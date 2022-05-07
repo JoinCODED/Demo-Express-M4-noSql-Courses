@@ -1,6 +1,6 @@
 const Student = require('../../models/Student');
 
-exports.fetchStudent = async (studentId) => {
+exports.fetchStudent = async (studentId, next) => {
   try {
     const student = await Student.findById(studentId);
     return student;
@@ -14,23 +14,26 @@ exports.studentsCreate = async (req, res, next) => {
     const newStudent = await Student.create(req.body);
     res.status(201).json(newStudent);
   } catch (error) {
-    next(error);  }
+    next(error);
+  }
 };
 
-exports.studentsDelete = (req, res, next) => {
+exports.studentsDelete = async (req, res, next) => {
   try {
     await Student.findByIdAndRemove(req.student.id);
     res.status(204).end();
   } catch (error) {
-    next(error);  }
+    next(error);
+  }
 };
 
 exports.studentsUpdate = async (req, res, next) => {
   try {
     await Student.findByIdAndUpdate(req.student.id, req.body);
-      res.status(204).end();
+    res.status(204).end();
   } catch (error) {
-    next(error);  }
+    next(error);
+  }
 };
 
 exports.studentsGet = async (req, res, next) => {
@@ -38,7 +41,6 @@ exports.studentsGet = async (req, res, next) => {
     const students = await Student.find({}, '-createdAt -updatedAt');
     res.json(students);
   } catch (error) {
-    next(error);  }
+    next(error);
+  }
 };
-
-

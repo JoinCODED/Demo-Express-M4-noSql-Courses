@@ -9,7 +9,7 @@ const {
 } = require('./teachers.controllers');
 
 router.param('teacherId', async (req, res, next, teacherId) => {
-  const teacher = await fetchTeacher(+teacherId, next);
+  const teacher = await fetchTeacher(teacherId, next);
   if (teacher) {
     req.teacher = teacher;
     next();

@@ -1,6 +1,6 @@
 const Course = require('../../models/Course');
 
-exports.fetchCourse = async (courseId) => {
+exports.fetchCourse = async (courseId, next) => {
   try {
     const course = await Course.findById(courseId);
     return course;
@@ -15,26 +15,25 @@ exports.coursesCreate = async (req, res, next) => {
     res.status(201).json(newCourse);
   } catch (error) {
     next(error);
-    }
+  }
 };
 
-exports.coursesDelete = (req, res, next) => {
+exports.coursesDelete = async (req, res, next) => {
   try {
     await Course.findByIdAndRemove(req.course.id);
     res.status(204).end();
   } catch (error) {
     next(error);
-    }
+  }
 };
 
 exports.coursesUpdate = async (req, res, next) => {
-  
   try {
     await Course.findByIdAndUpdate(req.course.id, req.body);
     res.status(204).end();
   } catch (error) {
     next(error);
-    }
+  }
 };
 
 exports.coursesGet = async (req, res, next) => {
@@ -43,7 +42,5 @@ exports.coursesGet = async (req, res, next) => {
     res.json(courses);
   } catch (error) {
     next(error);
-    }
+  }
 };
-
-

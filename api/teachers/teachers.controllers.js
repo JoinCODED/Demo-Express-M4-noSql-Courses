@@ -1,6 +1,6 @@
 const Teacher = require('../../models/Teacher');
 
-exports.fetchTeacher = async (teacherId) => {
+exports.fetchTeacher = async (teacherId, next) => {
   try {
     const teacher = await Teacher.findById(teacherId);
     return teacher;
@@ -14,25 +14,26 @@ exports.teachersCreate = async (req, res, next) => {
     const newTeacher = await Teacher.create(req.body);
     res.status(201).json(newTeacher);
   } catch (error) {
-    next(error);  }
+    next(error);
+  }
 };
 
-exports.teachersDelete = (req, res, next) => {
+exports.teachersDelete = async (req, res, next) => {
   try {
     await Teacher.findByIdAndRemove(req.teacher.id);
-      res.status(204).end();
-
+    res.status(204).end();
   } catch (error) {
-    next(error);  
+    next(error);
   }
 };
 
 exports.teachersUpdate = async (req, res, next) => {
   try {
     await Teacher.findByIdAndUpdate(req.teacher.id, req.body);
-      res.status(204).end();
+    res.status(204).end();
   } catch (error) {
-    next(error);  }
+    next(error);
+  }
 };
 
 exports.teachersGet = async (req, res, next) => {
@@ -40,7 +41,6 @@ exports.teachersGet = async (req, res, next) => {
     const teachers = await Teacher.find({}, '-createdAt -updatedAt');
     res.json(teachers);
   } catch (error) {
-    next(error);  }
+    next(error);
+  }
 };
-
-
