@@ -1,52 +1,49 @@
 const Course = require('../../models/Course');
 
-exports.coursesCreate = async (req, res) => {
+exports.fetchCourse = async (courseId) => {
+  try {
+    const course = await Course.findById(courseId);
+    return course;
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.coursesCreate = async (req, res, next) => {
   try {
     const newCourse = await Course.create(req.body);
     res.status(201).json(newCourse);
   } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-exports.coursesDelete = (req, res) => {
-  const { courseId } = req.params;
-  try {
-    const foundCourse = await Course.findById(+courseId);
-    if (foundCourse){
-      await foundCourse.remove();
-      res.status(204).end();
-  } else {
-    res.status(404).json({ message: "Course not found" });
-  }
-
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-exports.coursesUpdate = async (req, res) => {
-  const { courseId } = req.params;
-  try {
-    const foundCourse = await Course.findById(+courseId);
-    if (foundCourse) {
-      await foundCourse.findByIdAndUpdate(courseId, req.body, { new: true });
-      res.status(204).end();
-    } else {
-      res.status(404).json({ message: 'Course not found' });
+    next(error);
     }
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
 };
 
-exports.coursesGet = async (req, res) => {
+exports.coursesDelete = (req, res, next) => {
+  try {
+    await Course.findByIdAndRemove(req.course.id);
+    res.status(204).end();
+  } catch (error) {
+    next(error);
+    }
+};
+
+exports.coursesUpdate = async (req, res, next) => {
+  
+  try {
+    await Course.findByIdAndUpdate(req.course.id, req.body);
+    res.status(204).end();
+  } catch (error) {
+    next(error);
+    }
+};
+
+exports.coursesGet = async (req, res, next) => {
   try {
     const courses = await Course.find({}, '-createdAt -updatedAt');
     res.json(courses);
   } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+    next(error);
+    }
 };
 
 

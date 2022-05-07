@@ -1,52 +1,46 @@
 const Teacher = require('../../models/Teacher');
 
-exports.teachersCreate = async (req, res) => {
+exports.fetchTeacher = async (teacherId) => {
+  try {
+    const teacher = await Teacher.findById(teacherId);
+    return teacher;
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.teachersCreate = async (req, res, next) => {
   try {
     const newTeacher = await Teacher.create(req.body);
     res.status(201).json(newTeacher);
   } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+    next(error);  }
 };
 
-exports.teachersDelete = (req, res) => {
-  const { teacherId } = req.params;
+exports.teachersDelete = (req, res, next) => {
   try {
-    const foundTeacher = await Teacher.findById(+teacherId);
-    if (foundTeacher){
-      await foundTeacher.remove();
+    await Teacher.findByIdAndRemove(req.teacher.id);
       res.status(204).end();
-  } else {
-    res.status(404).json({ message: "Teacher not found" });
-  }
 
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);  
   }
 };
 
-exports.teachersUpdate = async (req, res) => {
-  const { teacherId } = req.params;
+exports.teachersUpdate = async (req, res, next) => {
   try {
-    const foundTeacher = await Teacher.findById(+teacherId);
-    if (foundTeacher) {
-      await foundTeacher.findByIdAndUpdate(teacherId, req.body, { new: true });
+    await Teacher.findByIdAndUpdate(req.teacher.id, req.body);
       res.status(204).end();
-    } else {
-      res.status(404).json({ message: 'Teacher not found' });
-    }
   } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+    next(error);  }
 };
 
-exports.teachersGet = async (req, res) => {
+exports.teachersGet = async (req, res, next) => {
   try {
     const teachers = await Teacher.find({}, '-createdAt -updatedAt');
     res.json(teachers);
   } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+    next(error);  }
 };
 
 

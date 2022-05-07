@@ -5,7 +5,20 @@ const {
   teachersUpdate,
   teachersDelete,
   teachersCreate,
+  fetchTeacher,
 } = require('./teachers.controllers');
+
+router.param('teacherId', async (req, res, next, teacherId) => {
+  const teacher = await fetchTeacher(+teacherId, next);
+  if (teacher) {
+    req.teacher = teacher;
+    next();
+  } else {
+    const err = new Error('Teacher Not Found');
+    err.status = 404;
+    next(err);
+  }
+});
 
 router.get('/', teachersGet);
 router.post('/', teachersCreate);
